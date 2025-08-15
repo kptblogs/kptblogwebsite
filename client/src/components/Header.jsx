@@ -25,14 +25,16 @@ const Header = () => {
         </div>
         <h1 className="text-3xl sm:text-6xl font-semibold sm:leading-16 text-gray-700">
           {" "}
-          Your Own <span className="text-primary">Blogging </span> <br />
+          KPT Mangalore <span className="text-primary">Blogging </span> <br />
           Platform.
         </h1>
 
         <p className="my-6 sm:my-8 max-w-2xl m-auto max-sm:text-xs text-gray-500">
-          This siyour space to think out loud, to share what maters, and to
-          write without filters. Whether it's one word or a thousand, your story
-          starts right here.
+          Your space to share the spirit of KPT Mangalore — from campus events
+          and departmental highlights to research, innovation, and creative
+          ideas. With 8 vibrant departments, every story here celebrates the
+          life and achievements of our diploma college.
+          {/* This is your space to capture the pulse of KPT Mangalore — from departmental activities and campus events to research breakthroughs and innovative projects. With 8 dynamic departments, every corner of our diploma college has a story worth telling. Whether it’s a technical achievement, a cultural celebration, or a spark of creativity, share it here for everyone to read, learn, and be inspired. */}
         </p>
 
         <form
