@@ -2,11 +2,13 @@ import React from "react";
 import { assets } from "../../assets/assets";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom"; // ✅ import
 
 const BlogTableItem = ({ blog, fetchBlogs, index }) => {
   const { title, createdAt } = blog;
   const { axios } = useAppContext();
   const BlogDate = new Date(createdAt);
+  const navigate = useNavigate(); // ✅ hook
 
   const deleteBlog = async () => {
     const confirm = window.confirm(
@@ -25,6 +27,7 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
       toast.error(error.message);
     }
   };
+
   const togglePublish = async () => {
     try {
       const { data } = await axios.post("/api/blog/toggle-publish", {
@@ -39,6 +42,11 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  // ✅ navigate to update page
+  const handleUpdate = () => {
+    navigate(`/admin/blogs/update/${blog._id}`);
   };
 
   return (
@@ -62,11 +70,20 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
         >
           {blog.isPublished ? "Unpublish" : "Publish"}
         </button>
+
+        {/* ✅ Update Button */}
+        <button
+          onClick={handleUpdate}
+          className="border px-2 py-0.5 mt-1 rounded bg-red-100 hover:bg-red-300 cursor-pointer"
+        >
+          Update
+        </button>
+
         <img
           src={assets.cross_icon}
           onClick={deleteBlog}
           className="w-8 hover:scale-110 transition cursor-pointer"
-          alt=""
+          alt="Delete"
         />
       </td>
     </tr>
