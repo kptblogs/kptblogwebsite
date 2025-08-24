@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 import Loader from "../components/Loader";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
-
+import { ChevronUp } from "lucide-react";
 const Blog = () => {
   const { id } = useParams();
 
@@ -17,6 +17,20 @@ const Blog = () => {
 
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
+  const [showScroll, setShowScroll] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScroll(window.scrollY > 300);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const fetchBlogData = async () => {
     try {
@@ -167,6 +181,16 @@ const Blog = () => {
           </div>
         </div>
       </div>
+      {/* Scroll to Top Button */}
+      {showScroll && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-50 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/80 transition-all"
+        >
+          <ChevronUp size={24} />
+        </button>
+      )}
+
       <Footer />
     </div>
   ) : (
