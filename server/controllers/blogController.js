@@ -121,12 +121,65 @@ export const getBlogComments = async (req, res) => {
   }
 };
 
-export const generateContent = async (req, res)=>{
-    try {
-        const {prompt} = req.body;
-        const content = await main(prompt + ' Generate a blog content for this topic in simple text format')
-        res.json({success: true, content})
-    } catch (error) {
-        res.json({success: false, message: error.message})
+export const generateContent = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    const content = await main(
+      prompt + " Generate a blog content for this topic in simple text format"
+    );
+    res.json({ success: true, content });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const updateBlogById = async (req, res) => {
+  try {
+    const { id } = req.params; // blogId from URL
+    const { title, subTitle, description, category, isPublished } = JSON.parse(
+      req.body.blog
+    );
+    const imageFile = req.file; // optional new image
+
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.json({ success: false, message: "Blog not found" });
     }
-}
+
+    // if new image uploaded, update it on ImageKit
+    if (imageFile) {
+      const fileBuffer = fs.readFileSync(imageFile.path);
+
+      const response = await imagekit.upload({
+        file: fileBuffer,
+        fileName: imageFile.originalname,
+        folder: "/blogs",
+      });
+
+      const optimizedImageUrl = imagekit.url({
+        path: response.filePath,
+        transformation: [
+          { quality: "auto" },
+          { format: "webp" },
+          { width: "1280" },
+        ],
+      });
+
+      blog.image = optimizedImageUrl;
+    }
+
+    // update other fields
+    blog.title = title || blog.title;
+    blog.subTitle = subTitle || blog.subTitle;
+    blog.description = description || blog.description;
+    blog.category = category || blog.category;
+    blog.isPublished =
+      isPublished !== undefined ? isPublished : blog.isPublished;
+
+    await blog.save();
+
+    res.json({ success: true, message: "Blog updated successfully", blog });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
